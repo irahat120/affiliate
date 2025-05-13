@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Models\Category;
-use App\Models\CollectProductStock;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -26,4 +25,10 @@ class AdminProduct extends Model
     {
         return $this->hasMany(CollectProductStock::class);
     }
+
+    public function collectProductStockList()
+    {
+        return $this->hasMany(collectProductStockList::class);
+    }
+    
 }

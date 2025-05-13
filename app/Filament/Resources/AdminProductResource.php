@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
@@ -13,19 +14,26 @@ use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
+use App\Models\CollectProductStockList;
 use Filament\Forms\Components\Checkbox;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Columns\CheckboxColumn;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\AdminProductResource\Pages;
 use App\Filament\Resources\AdminProductResource\RelationManagers;
+use App\Filament\Resources\AdminProductResource\Pages\EditAdminProduct;
+use App\Filament\Resources\AdminProductResource\Pages\ViewAdminProduct;
+use App\Filament\Resources\AdminProductResource\Pages\ListAdminProducts;
+use App\Filament\Resources\AdminProductResource\Pages\CreateAdminProduct;
 
 class AdminProductResource extends Resource
 {
@@ -52,7 +60,7 @@ class AdminProductResource extends Resource
                     ->schema([
                         Section::make('Pricing')
                             ->schema([
-                                TextInput::make('buy_price'), 
+                                // TextInput::make('buy_price'), 
                                 TextInput::make('sell_price')])
                             ->collapsible(),
                         Section::make('Files')
@@ -70,26 +78,50 @@ class AdminProductResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('index')->rowIndex()->label('SL')->sortable()->searchable()->toggleable(), 
+                TextColumn::make('id')->label('SL')->sortable()->searchable()->toggleable(), 
                 ImageColumn::make('image'), 
                 TextColumn::make('product_name')->limit(25)->sortable()->searchable()->toggleable(), 
                 TextColumn::make('sku')->sortable()->searchable()->toggleable(), 
                 TextColumn::make('Categories.name')->sortable()->searchable()->toggleable(), 
+
                 TextColumn::make('collectProductStock.paid_price')
-                ->label('Buy Price')
-                ->formatStateUsing(function ($record) {
-                    
-                   $stock = CollectProductStock::where('admin_product_id', $record->id)
-                        ->orderBy('id', 'desc')
-                        ->first();
-                    return number_format($stock->paid_price);
-                }),
-                // TextColumn::make('buy_price')->label('buy price')->sortable()->searchable()->toggleable(), 
-                TextColumn::make('sell_price')->sortable()->searchable()->toggleable(), 
+                    ->label('Buy Price')
+                    ->formatStateUsing(function ($record) {
+                        $prices = CollectProductStock::where('admin_product_id', $record->id)
+                            ->orderBy('id', 'desc')
+                            ->first();
+                        $price = number_format($prices->paid_price);
+                        return $price;
+                    })->sortable()->searchable()->toggleable(),
+
+                 
+            
+                TextColumn::make('collectProductStock.admin_product_id')
+                    ->label('Stock Status')
+                    ->formatStateUsing(function ($record) {
+                        $stocks = number_format($record->collectProductStockList()->where('stock_status', 'Instock')->where('admin_product_id', $record->id)->count());
+                        return $stocks;
+                    })->sortable()->searchable()->toggleable(),
+
+                TextColumn::make('sell_price')
+                    ->label('Total')
+                    ->formatStateUsing(function ($record) {
+                        $price = CollectProductStock::where('admin_product_id', $record->id)
+                            ->orderBy('id', 'desc')
+                            ->value('paid_price') ?? 0;
+
+                        $stocks = $record->collectProductStockList()
+                            ->where('stock_status', 'Instock')
+                            ->where('admin_product_id', $record->id)
+                            ->count();
+
+                        return number_format($price * $stocks);
+                    })->sortable()->searchable()->toggleable(),
+
+                // TextColumn::make('sell_price')->sortable()->searchable()->toggleable(),
                 TextColumn::make('brand')->sortable()->searchable()->toggleable(), 
                 TextColumn::make('tags')->sortable()->searchable()->toggleable(), 
-                TextColumn::make('stock')->sortable()->searchable()->toggleable(), 
-                CheckboxColumn::make('status')->sortable()->searchable()->toggleable()
+                CheckboxColumn::make('status')->sortable()->searchable()->toggleable(),
                 ])
             ->filters([
                 //
@@ -101,25 +133,55 @@ class AdminProductResource extends Resource
                     ->modalHeading('Add Stock')
                     ->form([
                         Section::make('Info')->schema([
-                        TextInput::make('unique_number')->default(\Carbon\Carbon::now()->format('dm'))->label('Collection Date')->required()->readOnly(),
-                        TextInput::make('admin_product_id')->label('Product Id')->default(fn($record) => $record->id)->readOnly(),
-                        TextInput::make('quantity')->label('Add Quantity')->numeric()->required(),
-                        TextInput::make('paid_price')->label('Buy Price')->numeric()->required(),
+                            TextInput::make('unique_number')->default(Carbon::now()->format('dm'))->label('Collection Id')->required()->readOnly(),
+                            TextInput::make('admin_product_id')->label('Product Id')->default(fn($record) => $record->id)->readOnly(),
+                            TextInput::make('quantity')->label('Add Quantity')->numeric()->required(),
+                            TextInput::make('paid_price')->label('Buy Price')->default(fn($record) => $record->buy_price)->numeric()->required(),
                         ])->columns(2),
                     ])
                     ->action(function (array $data) {
-                        // Insert the quantity
+                        // Insert 
                         CollectProductStock::insert([
                             'unique_number' => $data['unique_number'],
                             'admin_product_id' => $data['admin_product_id'],
                             'quantity' => $data['quantity'],
                             'paid_price' => $data['paid_price'],
+                            'created_at' => now()->timezone('Asia/Dhaka'),
+                            'updated_at' => now()->timezone('Asia/Dhaka'),
                         ]);
+                        Notification::make()
+                        ->title('Stock added successfully!')
+                        ->success()
+                        ->send();
+                        for ($i = 0; $i < $data['quantity']; $i++) {
 
-                        AdminProduct::where('id', $data['admin_product_id'])->increment('stock', $data['quantity']);
+                            $StockId = CollectProductStock::orderBy('id', 'desc')->first();
+                            $collect_product_stock_id = $StockId->id;
+
+                            CollectProductStockList::insert([
+                                'unique_number' => $data['unique_number'],
+                                'collect_product_stock_id'=>$collect_product_stock_id,
+                                'admin_product_id' => $data['admin_product_id'],
+                                'buy_price' => $data['paid_price'],
+                                'created_at' => now()->timezone('Asia/Dhaka'),
+                                'updated_at' => now()->timezone('Asia/Dhaka'),
+                            ]);
+                        }
+                        Notification::make()
+                            ->title('Stock list added successfully!')
+                            ->success()
+                            ->send();
+                            
+                        AdminProduct::where('id', $data['admin_product_id'])->update([
+                            'buy_price' => $data['paid_price']
+                            ]);
+
                     })->color('success'),
             ])
-            ->bulkActions([Tables\Actions\BulkActionGroup::make([Tables\Actions\DeleteBulkAction::make()])]);
+            ->bulkActions([Tables\Actions\BulkActionGroup::make([
+                Tables\Actions\DeleteBulkAction::make()
+                ])
+            ]);
     }
 
     public static function getRelations(): array
