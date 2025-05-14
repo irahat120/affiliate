@@ -16,7 +16,6 @@ class EditCategory extends EditRecord
         return [
             Actions\ViewAction::make(),
             Actions\DeleteAction::make(),
-            Actions\CreateAction::make(),
         ];
     }
 
