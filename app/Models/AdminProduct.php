@@ -30,5 +30,10 @@ class AdminProduct extends Model
     {
         return $this->hasMany(collectProductStockList::class);
     }
+
+    public function CollectionUserInfo()
+    {
+        return $this->hasMany(CollectionUserInfo::class);
+    }
     
 }

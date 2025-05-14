@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CollectProductStock extends Model
 {
+    protected $table = 'collect_product_stocks';
     protected $fillable = ['unique_number','admin_product_id','quantity','paid_price','collection_user','created_at','updated_at'];
 
     public function AdminProduct():BelongsTo
@@ -16,6 +17,14 @@ class CollectProductStock extends Model
         return $this->belongsTo(AdminProduct::class);
     }
 
-    
+    public function collectionUserInfo()
+    {
+        return $this->belongsTo(CollectionUserInfo::class, 'unique_number', 'collection_id');
+
+    }
+
+
 
 }
+
+

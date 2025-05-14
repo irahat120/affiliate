@@ -34,6 +34,7 @@ use App\Filament\Resources\AdminProductResource\Pages\EditAdminProduct;
 use App\Filament\Resources\AdminProductResource\Pages\ViewAdminProduct;
 use App\Filament\Resources\AdminProductResource\Pages\ListAdminProducts;
 use App\Filament\Resources\AdminProductResource\Pages\CreateAdminProduct;
+use App\Models\CollectionUserInfo;
 
 class AdminProductResource extends Resource
 {
@@ -140,7 +141,7 @@ class AdminProductResource extends Resource
                         ])->columns(2),
                     ])
                     ->action(function (array $data) {
-                        // Insert 
+                        // Insert collect product stock start--------------------
                         CollectProductStock::insert([
                             'unique_number' => $data['unique_number'],
                             'admin_product_id' => $data['admin_product_id'],
@@ -153,6 +154,9 @@ class AdminProductResource extends Resource
                         ->title('Stock added successfully!')
                         ->success()
                         ->send();
+
+                        // Insert collect product stock end------------------------------
+                        // Insert collect product stock list start------------------------------
                         for ($i = 0; $i < $data['quantity']; $i++) {
 
                             $StockId = CollectProductStock::orderBy('id', 'desc')->first();
@@ -171,10 +175,40 @@ class AdminProductResource extends Resource
                             ->title('Stock list added successfully!')
                             ->success()
                             ->send();
-                            
+
+                        // Insert collect product stock list end------------------------------
+
+                        // Update admin product start--------------------------------------
+                        $stocks =collectProductStockList::where('stock_status', 'Instock')
+                            ->where('admin_product_id', $data['admin_product_id'])
+                            ->count();
                         AdminProduct::where('id', $data['admin_product_id'])->update([
-                            'buy_price' => $data['paid_price']
+                            'buy_price' => $data['paid_price'],
+                            'stock' => $stocks,
                             ]);
+
+                        // Update admin product end--------------------------------------
+
+                        //total Value Update balance Start------------------------
+
+                        $price = CollectProductStock::where('unique_number', $data['unique_number'])
+                            ->selectRaw('SUM(quantity * paid_price) as total_value')
+                            ->value('total_value') ?? 0;
+
+                        $quantity = CollectProductStock::where('unique_number', $data['unique_number'])
+                            ->selectRaw('SUM(quantity) as total_quantity')
+                            ->value('total_quantity') ?? 0;
+
+                        CollectionUserInfo::where('collection_id',$data['unique_number'])->update([
+                            'total_value' => number_format($price, 2),
+                            'quantity' => $quantity,
+                        ]);
+                        Notification::make()
+                            ->title('Update Total added successfully!')
+                            ->success()
+                            ->send();
+                        //total Value Update balance End----------------------
+
 
                     })->color('success'),
             ])
