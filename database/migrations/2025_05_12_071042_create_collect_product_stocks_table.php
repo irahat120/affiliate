@@ -16,8 +16,8 @@ return new class extends Migration
             $table->id();
             $table->string('unique_number');
             $table->foreignId('admin_product_id')->constrained();
-            $table->integer('quantity');
-            $table->integer('paid_price')->default(0);
+            $table->integer('quantity')->nullable()->default(0);
+            $table->integer('paid_price')->nullable()->default(0);
             $table->string('collection_user')->default('admin');
             $table->string('stock')->default('pending');
             $table->timestamps();

@@ -36,4 +36,9 @@ class CollectProductStockList extends Model
 
         return $this->belongsTo(AdminProduct::class);
     }
+    public function collectproductstock()
+    {
+
+        return $this->belongsTo(collectproductstock::class);
+    }
 }

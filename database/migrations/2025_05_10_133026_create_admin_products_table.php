@@ -19,11 +19,11 @@ return new class extends Migration
             $table->integer('categories_id')->unsigned(); 
             $table->foreign('categories_id')->references('id')->on('categories');
             $table->string('image');
-            $table->integer('buy_price')->nullable();
+            $table->integer('buy_price')->nullable()->default(0);
             $table->integer('sell_price')->nullable()->default(0);
             $table->string('brand');
             $table->json('tags');
-            $table->integer('total_sell')->default(0);
+            $table->integer('total_sell')->nullable()->default(0);
             $table->integer('stock')->default(0);
             $table->boolean('status')->default(true);
             $table->timestamps();

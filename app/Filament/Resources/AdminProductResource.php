@@ -83,8 +83,7 @@ class AdminProductResource extends Resource
                 ImageColumn::make('image'), 
                 TextColumn::make('product_name')->limit(25)->sortable()->searchable()->toggleable(), 
                 TextColumn::make('sku')->sortable()->searchable()->toggleable(), 
-                TextColumn::make('Categories.name')->sortable()->searchable()->toggleable(), 
-
+                TextColumn::make('Categories.name')->sortable()->searchable()->toggleable(),
                 TextColumn::make('collectProductStock.paid_price')
                     ->label('Buy Price')
                     ->formatStateUsing(function ($record) {
@@ -95,14 +94,14 @@ class AdminProductResource extends Resource
                         return $price;
                     })->sortable()->searchable()->toggleable(),
 
-                 
-            
-                TextColumn::make('collectProductStock.admin_product_id')
+
+                TextColumn::make('collectProductStock.stock')
                     ->label('Stock Status')
                     ->formatStateUsing(function ($record) {
                         $stocks = number_format($record->collectProductStockList()->where('stock_status', 'Instock')->where('admin_product_id', $record->id)->count());
                         return $stocks;
                     })->sortable()->searchable()->toggleable(),
+
 
                 TextColumn::make('sell_price')
                     ->label('Total')
@@ -119,7 +118,6 @@ class AdminProductResource extends Resource
                         return number_format($price * $stocks);
                     })->sortable()->searchable()->toggleable(),
 
-                // TextColumn::make('sell_price')->sortable()->searchable()->toggleable(),
                 TextColumn::make('brand')->sortable()->searchable()->toggleable(), 
                 TextColumn::make('tags')->sortable()->searchable()->toggleable(), 
                 CheckboxColumn::make('status')->sortable()->searchable()->toggleable(),

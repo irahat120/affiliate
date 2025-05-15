@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\AdminProduct;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class CollectProductStock extends Model
 {
@@ -21,6 +22,12 @@ class CollectProductStock extends Model
     {
         return $this->belongsTo(CollectionUserInfo::class, 'unique_number', 'collection_id');
 
+    }
+
+    public function collectproductstocklist()
+    {
+
+        return $this->hasMany(collectproductstocklist::class);
     }
 
 
