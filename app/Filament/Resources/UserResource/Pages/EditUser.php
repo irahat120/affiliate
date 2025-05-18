@@ -14,21 +14,21 @@ class EditUser extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\ViewAction::make(),
             Actions\DeleteAction::make(),
         ];
     }
 
     protected function getSavedNotification(): ?Notification
+
     {
         return Notification::make()
-            ->success()
-            ->title('User updated')
-            ->body('The user has been saved successfully.');
+        ->success()
+        ->title('User Updated')
+        ->body('The user has been Updated successfully.');
+
     }
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
     }
-
 }
