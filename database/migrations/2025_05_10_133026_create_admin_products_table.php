@@ -16,8 +16,7 @@ return new class extends Migration
             $table->string('product_name');
             $table->string('sku');
             $table->string('description');
-            $table->integer('categories_id')->unsigned(); 
-            $table->foreign('categories_id')->references('id')->on('categories');
+            $table->foreignId('categories_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->string('image');
             $table->integer('buy_price')->nullable()->default(0);
             $table->integer('sell_price')->nullable()->default(0);

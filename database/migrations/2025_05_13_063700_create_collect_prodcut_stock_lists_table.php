@@ -13,25 +13,34 @@ return new class extends Migration
     {
         Schema::create('collect_product_stock_lists', function (Blueprint $table) {
             $table->id();
-            $table->integer('unique_number');
-            $table->foreignId('collect_product_stock_id')->constrained();
-            $table->foreignId('admin_product_id')->constrained();
+            $table->integer('collection_number');
+            $table->foreignId('collect_product_stock_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('admin_product_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->integer('buy_price');
-            $table->string('collection_user')->default('admin');
+            $table->unsignedBigInteger('collection_user');
+            $table->foreign('collection_user')->references('id')->on('users');
             $table->string('stock_status')->default('Instock');
             $table->string('Order_number')->nullable();
             $table->string('track_number')->nullable();
-            $table->string('packing_user')->nullable();
+
+            $table->unsignedBigInteger('packing_user')->nullable();
+            $table->foreign('packing_user')->references('id')->on('users');
             $table->string('packing_time')->nullable();
-            $table->string('droaping_user')->nullable();
+
+            $table->unsignedBigInteger('droaping_user')->nullable();
+            $table->foreign('droaping_user')->references('id')->on('users');
             $table->string('droaping_time')->nullable();
-            $table->string('return_user')->nullable();
+
+            $table->unsignedBigInteger('return_user')->nullable();
+            $table->foreign('return_user')->references('id')->on('users');
             $table->string('return_time')->nullable();
             $table->string('return_confirm_status')->nullable();
-            $table->string('return_confirm_user')->nullable();
+            $table->unsignedBigInteger('return_confirm_user')->nullable();
+            $table->foreign('return_confirm_user')->references('id')->on('users');
             $table->string('return_confirm_time')->nullable();
+            
             $table->string('sell_price')->nullable();
-            $table->timestamps();
+            $table->timestamps('Asia/Dhaka');
         });
     }
 

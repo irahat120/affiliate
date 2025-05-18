@@ -14,11 +14,12 @@ return new class extends Migration
     {
         Schema::create('collect_product_stocks', function (Blueprint $table) {
             $table->id();
-            $table->string('unique_number');
-            $table->foreignId('admin_product_id')->constrained();
+            $table->integer('collection_number');
+            $table->foreignId('admin_product_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->integer('quantity')->nullable()->default(0);
             $table->integer('paid_price')->nullable()->default(0);
-            $table->string('collection_user')->default('admin');
+            $table->unsignedBigInteger('collection_user');
+            $table->foreign('collection_user')->references('id')->on('users');
             $table->string('stock')->default('pending');
             $table->timestamps();
         });
