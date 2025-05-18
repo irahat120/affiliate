@@ -9,8 +9,10 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Models\AdminProduct;
 use Filament\Resources\Resource;
+use App\Models\CollectionUserInfo;
 use App\Models\CollectProductStock;
 use Filament\Tables\Actions\Action;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
@@ -34,13 +36,19 @@ use App\Filament\Resources\AdminProductResource\Pages\EditAdminProduct;
 use App\Filament\Resources\AdminProductResource\Pages\ViewAdminProduct;
 use App\Filament\Resources\AdminProductResource\Pages\ListAdminProducts;
 use App\Filament\Resources\AdminProductResource\Pages\CreateAdminProduct;
-use App\Models\CollectionUserInfo;
 
 class AdminProductResource extends Resource
 {
     protected static ?string $model = AdminProduct::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-list-bullet';
+    protected static ?string $navigationGroup = 'Product Management';
+
+    
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
 
     public static function form(Form $form): Form
     {
@@ -132,19 +140,25 @@ class AdminProductResource extends Resource
                     ->modalHeading('Add Stock')
                     ->form([
                         Section::make('Info')->schema([
-                            TextInput::make('unique_number')->default(Carbon::now()->format('dm'))->label('Collection Id')->required()->readOnly(),
+                            TextInput::make('collection_number')->default(Carbon::now()->format('dm'))->label('Collection Id')->required()->readOnly(),
                             TextInput::make('admin_product_id')->label('Product Id')->default(fn($record) => $record->id)->readOnly(),
                             TextInput::make('quantity')->label('Add Quantity')->numeric()->required(),
+                            TextInput::make('collection_user')
+                                ->default(fn() => Auth::user()->id)
+                                ->label('Collection User')
+                                ->required()
+                                ->readOnly(),
                             TextInput::make('paid_price')->label('Buy Price')->default(fn($record) => $record->buy_price)->numeric()->required(),
                         ])->columns(2),
                     ])
                     ->action(function (array $data) {
                         // Insert collect product stock start--------------------
                         CollectProductStock::insert([
-                            'unique_number' => $data['unique_number'],
+                            'collection_number' => $data['collection_number'],
                             'admin_product_id' => $data['admin_product_id'],
                             'quantity' => $data['quantity'],
                             'paid_price' => $data['paid_price'],
+                            'collection_user' => $data['collection_user'],
                             'created_at' => now()->timezone('Asia/Dhaka'),
                             'updated_at' => now()->timezone('Asia/Dhaka'),
                         ]);
@@ -161,10 +175,11 @@ class AdminProductResource extends Resource
                             $collect_product_stock_id = $StockId->id;
 
                             CollectProductStockList::insert([
-                                'unique_number' => $data['unique_number'],
+                                'collection_number' => $data['collection_number'],
                                 'collect_product_stock_id'=>$collect_product_stock_id,
                                 'admin_product_id' => $data['admin_product_id'],
                                 'buy_price' => $data['paid_price'],
+                                'collection_user' => $data['collection_user'],
                                 'created_at' => now()->timezone('Asia/Dhaka'),
                                 'updated_at' => now()->timezone('Asia/Dhaka'),
                             ]);
@@ -189,15 +204,15 @@ class AdminProductResource extends Resource
 
                         //total Value Update balance Start------------------------
 
-                        $price = CollectProductStock::where('unique_number', $data['unique_number'])
+                        $price = CollectProductStock::where('collection_number', $data['collection_number'])
                             ->selectRaw('SUM(quantity * paid_price) as total_value')
                             ->value('total_value') ?? 0;
 
-                        $quantity = CollectProductStock::where('unique_number', $data['unique_number'])
+                        $quantity = CollectProductStock::where('collection_number', $data['collection_number'])
                             ->selectRaw('SUM(quantity) as total_quantity')
                             ->value('total_quantity') ?? 0;
 
-                        CollectionUserInfo::where('collection_id',$data['unique_number'])->update([
+                        CollectionUserInfo::where('collection_number',$data['collection_number'])->update([
                             'total_value' => number_format($price, 2),
                             'quantity' => $quantity,
                         ]);

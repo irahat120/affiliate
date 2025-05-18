@@ -10,7 +10,7 @@ class CollectProductStockList extends Model
 {
    use HasFactory;
     protected $fillable = [
-        'unique_number',
+        'collection_number',
         'collect_product_stock_id',
         'admin_product_id',
         'buy_price',
@@ -40,5 +40,10 @@ class CollectProductStockList extends Model
     {
 
         return $this->belongsTo(collectproductstock::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'collection_user');
     }
 }

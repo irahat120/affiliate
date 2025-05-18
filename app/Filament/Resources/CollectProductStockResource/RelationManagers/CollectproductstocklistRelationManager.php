@@ -39,7 +39,7 @@ class CollectproductstocklistRelationManager extends RelationManager
                 ImageColumn::make('AdminProduct.image'),
                 TextColumn::make('AdminProduct.product_name'),
                 TextColumn::make('buy_price'),
-                TextColumn::make('collection_user'),
+                TextColumn::make('user.name'),
                 TextColumn::make('stock_status'),
             ])
             ->filters([

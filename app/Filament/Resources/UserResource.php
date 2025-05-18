@@ -2,39 +2,47 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers;
+
 use App\Models\User;
-use Filament\Forms;
-use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\CheckboxColumn;
-use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Checkbox;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Columns\CheckboxColumn;
+use Filament\Forms\Components\DateTimePicker;
+use App\Filament\Resources\UserResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\UserResource\RelationManagers;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-user-circle';
-    protected static ?string $modelLabel = 'Admin User';
-       
+    protected static ?string $navigationIcon = 'heroicon-o-user';
+    protected static ?string $navigationGroup = 'Access';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('name')->required(),
-                TextInput::make('user_name')->required(),
-                TextInput::make('email')->email(),
-                TextInput::make('password')->password()->visibleOn('create'),
-                Checkbox::make('status'),
-                
+                TextInput::make('name')
+                    ->required(),
+                TextInput::make('email')
+                    ->email()
+                    ->required(),
+                TextInput::make('password')->visibleOn('create')
+                    ->password()
+                    ->required(),
+                Select::make('roles')
+                    ->relationship('roles','name')->preload(),
+                Select::make('permissions')->multiple()->relationship('permissions','name')->preload(),
             ]);
     }
 
@@ -42,16 +50,19 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name'),
-                TextColumn::make('user_name'),
-                TextColumn::make('email'),
+                TextColumn::make('name')
+                    ->searchable(),
+                TextColumn::make('email')
+                    ->searchable(),
+                TextColumn::make('created_at')->dateTime('d-M_Y'),
+                IconColumn::make('status')
+                    ->boolean(),
                 CheckboxColumn::make('status'),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -73,7 +84,6 @@ class UserResource extends Resource
         return [
             'index' => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
-            'view' => Pages\ViewUser::route('/{record}'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }

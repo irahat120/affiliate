@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use Filament\Forms;
+use App\Models\User;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
@@ -27,15 +28,21 @@ class CollectProductStockResource extends Resource
 {
     protected static ?string $model = CollectProductStock::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
+    protected static ?string $navigationGroup = 'Product Management';
+    protected static function getNavigationGroupCollapsible(): bool
+    {
+        return false;
+    }
+        
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 TextInput::make('id')->label('Collect product stock id')->readOnly(),
                 TextInput::make('admin_product_id')->label('Admin Product Id')->readOnly(),
-                TextInput::make('unique_number')->label('Collection Id')->readOnly(),
+                TextInput::make('collection_number')->label('Collection Id')->readOnly(),
+                TextInput::make('collection_user')->label('Collection User')->readOnly(),
                 Select::make('product_name')->disabledOn('edit')
                         ->relationship('AdminProduct','product_name')
                         ->label('Product Name'),
@@ -57,8 +64,9 @@ class CollectProductStockResource extends Resource
                             for ($i = 0; $i < $rowsToAdd; $i++) {
                                 CollectProductStockList::create([
                                     'collect_product_stock_id' => $collectProductStockId,
-                                    'unique_number' => $get('unique_number'),
+                                    'collection_number' => $get('collection_number'),
                                     'admin_product_id' => $get('admin_product_id'),
+                                    'collection_user' => $get('collection_user'),
                                     'buy_price' => $get('paid_price'),
                                 ]);
                             }
@@ -110,14 +118,14 @@ class CollectProductStockResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('index')->rowIndex()->label('SL')->sortable()->searchable()->toggleable(), 
-                TextColumn::make('unique_number')->label('Collection id')->sortable()->searchable()->toggleable(),
+                TextColumn::make('collection_number')->label('Collection id')->sortable()->searchable()->toggleable(),
                 TextColumn::make('admin_product_id')->label('Product id')->sortable()->searchable()->toggleable(),
                 ImageColumn::make('AdminProduct.image')->label('Images'), 
                 TextColumn::make('AdminProduct.product_name')->label('Product Name')->limit(25)->sortable()->searchable()->toggleable(), 
                 TextColumn::make('AdminProduct.sku')->label('SKU')->sortable()->searchable()->toggleable(), 
                 TextColumn::make('paid_price')->sortable()->searchable()->toggleable(), 
                 TextColumn::make('quantity')->sortable()->searchable()->toggleable(), 
-                TextColumn::make('collection_user')->sortable()->searchable()->toggleable(),
+                TextColumn::make('user.name')->label('Collection User')->limit(25)->sortable()->searchable()->toggleable(),
             ])
             ->filters([
                 //
