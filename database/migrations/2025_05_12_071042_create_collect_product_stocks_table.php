@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('admin_product_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->integer('quantity')->nullable()->default(0);
             $table->integer('paid_price')->nullable()->default(0);
-            $table->unsignedBigInteger('collection_user');
+            $table->unsignedBigInteger('collection_user')->nullable();
             $table->foreign('collection_user')->references('id')->on('users');
             $table->string('stock')->default('pending');
             $table->timestamps();

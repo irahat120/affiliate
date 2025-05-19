@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('collect_product_stock_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('admin_product_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->integer('buy_price');
-            $table->unsignedBigInteger('collection_user');
+            $table->unsignedBigInteger('collection_user')->nullable();
             $table->foreign('collection_user')->references('id')->on('users');
             $table->string('stock_status')->default('Instock');
             $table->string('Order_number')->nullable();

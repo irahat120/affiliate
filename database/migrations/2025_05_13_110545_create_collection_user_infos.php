@@ -16,7 +16,7 @@ return new class extends Migration
             $table->integer('collection_number');
             $table->integer('quantity')->nullable()->default(0);
 
-            $table->unsignedBigInteger('collection_user');
+            $table->unsignedBigInteger('collection_user')->nullable();
             $table->foreign('collection_user')->references('id')->on('users');
 
             $table->integer('total_value')->default(0);

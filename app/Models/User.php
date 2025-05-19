@@ -20,7 +20,13 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->hasRole('Admin');
+
+        if ($this->status === 1) {
+            $allowedRoles = Role::pluck('name')->toArray();
+            return $this->roles()->whereIn('name', $allowedRoles)->exists();
+        }
+        return false;
+        
     }
     /**
      * The attributes that are mass assignable.
@@ -56,4 +62,5 @@ class User extends Authenticatable implements FilamentUser
             'password' => 'hashed',
         ];
     }
+
 }

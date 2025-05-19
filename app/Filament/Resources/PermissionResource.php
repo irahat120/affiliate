@@ -5,15 +5,15 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
+use App\Models\Permission;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\TextColumn;
-use Spatie\Permission\Models\Permission;
+use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\PermissionResource\Pages;
 use App\Filament\Resources\PermissionResource\RelationManagers;
-use Filament\Forms\Components\TextInput;
 
 class PermissionResource extends Resource
 {
@@ -21,6 +21,7 @@ class PermissionResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-adjustments-vertical';
     protected static ?string $navigationGroup = 'Access';
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {
@@ -35,9 +36,9 @@ class PermissionResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id'),
-                TextColumn::make('name'),
-                TextColumn::make('created_at')->dateTime('d-M-Y')
+                TextColumn::make('index')->label('SL')->rowIndex()->searchable()->sortable()->toggleable(),
+                TextColumn::make('name')->searchable()->sortable()->toggleable(),
+                TextColumn::make('created_at')->dateTime('d-M-Y')->searchable()->sortable()->toggleable()
 
             ])
             ->filters([
@@ -45,6 +46,7 @@ class PermissionResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

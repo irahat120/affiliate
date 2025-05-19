@@ -84,11 +84,14 @@ class CollectionUserInfoResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('collection_number'),
-                TextColumn::make('user.name')->label('Collection User'),
-
+                TextColumn::make('index')
+                    ->label('SL.')
+                    ->rowIndex()
+                    ->searchable()->sortable()->toggleable(),
+                TextColumn::make('collection_number')->searchable()->sortable()->toggleable(),
+                TextColumn::make('user.name')->label('Collection User')->searchable()->sortable()->toggleable(),
                 TextColumn::make('quantity')
-                    ->label('Quantity')
+                    ->label('Quantity')->searchable()->sortable()->toggleable()
                     ->formatStateUsing(function ($record) {
 
                         $quantity = CollectProductStock::where('collection_number', $record->collection_number)->where('collection_user',$record->collection_user)
@@ -99,7 +102,7 @@ class CollectionUserInfoResource extends Resource
                     }),
 
                 TextColumn::make('total_value')
-                    ->label('Total')
+                    ->label('Total')->searchable()->sortable()->toggleable()
                     ->formatStateUsing(function ($record) {
                         $price = CollectProductStock::where('collection_number', $record->collection_number)->where('collection_user',$record->collection_user)
                             ->selectRaw('SUM(quantity * paid_price) as total_value')
@@ -107,7 +110,7 @@ class CollectionUserInfoResource extends Resource
                         return number_format($price, 2);
                     }),
                     
-                TextColumn::make('created_at')->since(),
+                TextColumn::make('created_at')->dateTime('d M y'),
             ])
             ->filters([
                 //
