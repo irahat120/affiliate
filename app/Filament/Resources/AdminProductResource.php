@@ -68,8 +68,7 @@ class AdminProductResource extends Resource
                 Section::make('Marking')
                     ->schema([
                         Section::make('Pricing')
-                            ->schema([
-                                // TextInput::make('buy_price'), 
+                            ->schema([ 
                                 TextInput::make('sell_price')])
                             ->collapsible(),
                         Section::make('Files')
@@ -140,7 +139,7 @@ class AdminProductResource extends Resource
                     ->modalHeading('Add Stock')
                     ->form([
                         Section::make('Info')->schema([
-                            TextInput::make('collection_number')->default(Carbon::now()->format('dm'))->label('Collection Id')->required()->readOnly(),
+                            TextInput::make('collection_number')->default(Carbon::now()->format('dmY'))->label('Collection Id')->required()->readOnly(),
                             TextInput::make('admin_product_id')->label('Product Id')->default(fn($record) => $record->id)->readOnly(),
                             TextInput::make('quantity')->label('Add Quantity')->numeric()->required(),
                             TextInput::make('collection_user')

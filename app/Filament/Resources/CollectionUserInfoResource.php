@@ -35,7 +35,7 @@ class CollectionUserInfoResource extends Resource
         return $form
             ->schema([
                 TextInput::make('collection_number')
-                    ->default(Carbon::now()->format('dm'))
+                    ->default(Carbon::now()->format('dmY'))
                     ->readOnly()
                     ->formatStateUsing(function ($record) {
                         
@@ -46,7 +46,7 @@ class CollectionUserInfoResource extends Resource
                         
                         // Generate a default collection number if no record exists
                         $userId = Auth::id();
-                        $collectionNumber = Carbon::now()->format('dm');
+                        $collectionNumber = Carbon::now()->format('dmY');
 
                         // Check if this collection number already exists for the user
                         $existing = CollectionUserInfo::where('collection_user', $userId)
