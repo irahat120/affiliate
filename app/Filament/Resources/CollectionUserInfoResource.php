@@ -27,7 +27,7 @@ class CollectionUserInfoResource extends Resource
 {
     protected static ?string $model = CollectionUserInfo::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-information-circle';
+    protected static ?string $navigationIcon = 'heroicon-o-document-currency-bangladeshi';
     protected static ?string $navigationGroup = 'Product Management';
     
     public static function form(Form $form): Form

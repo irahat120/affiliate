@@ -2,23 +2,30 @@
 
 namespace App\Filament\Resources;
 
+
 use Filament\Forms;
 use App\Models\User;
 use Filament\Tables;
+use App\Models\Order;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Models\AdminProduct;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Resources\Resource;
 use App\Models\CollectionUserInfo;
 use App\Models\CollectProductStock;
+use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\Select;
 use App\Models\CollectProductStockList;
+use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\TextColumn;
+use Picqer\Barcode\BarcodeGeneratorPNG;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\ImageColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Columns\CheckboxColumn;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\CollectProductStockResource\Pages;
 use App\Filament\Resources\CollectProductStockResource\RelationManagers;
@@ -75,19 +82,6 @@ class CollectProductStockResource extends Resource
                                 ->success()
                                 ->send();
                         }
-                        
-                        // product stock list buy price updated start -------------------
-                        CollectProductStockList::where('collect_product_stock_id',$collectProductStockId)->update([
-                            'buy_price' => $get('paid_price'),
-                        ]);
-                        Notification::make()
-                                ->title('Stock list Buy price updated successfully!')
-                                ->success()
-                                ->send();
-                        // product stock list buy price updated end -------------------
-                        
-
-
                         // admin product stock and buy price updated start -------------------
                         $stocks =collectProductStockList::where('stock_status', 'Instock')
                             ->where('admin_product_id', $get('admin_product_id'))
@@ -107,7 +101,12 @@ class CollectProductStockResource extends Resource
 
 
                     }),
-                TextInput::make('paid_price'),
+                TextInput::make('paid_price')
+                    ->afterStateUpdated(function ($state, callable $get) {
+                        CollectProductStockList::where('collect_product_stock_id',$get('id'))->update([
+                            'buy_price' => $get('paid_price'),
+                    ]);
+                }),
 
             ]);
 
@@ -115,6 +114,7 @@ class CollectProductStockResource extends Resource
     }
     public static function table(Table $table): Table
     {
+        $latestCollectionNumber = CollectProductStock::orderBy('collection_number', 'desc')->first()?->collection_number;
         return $table
             ->columns([
                 TextColumn::make('index')->rowIndex()->label('SL')->sortable()->searchable()->toggleable(), 
@@ -126,18 +126,56 @@ class CollectProductStockResource extends Resource
                 TextColumn::make('paid_price')->sortable()->searchable()->toggleable(), 
                 TextColumn::make('quantity')->sortable()->searchable()->toggleable(), 
                 TextColumn::make('user.name')->label('Collection User')->limit(25)->sortable()->searchable()->toggleable(),
+                TextColumn::make('created_at')->datetime('d M y')
             ])
             ->filters([
-                //
+                Filter::make('latest_collection')
+                    ->label('Latest Collection')
+                    ->default(true)
+                    ->query(fn ($query) => $latestCollectionNumber
+                        ? $query->where('collection_number', $latestCollectionNumber)
+                        : $query),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                // Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    BulkAction::make('printBarcodes')
+                    ->label('Print Barcodes')
+                    ->action(function (Collection $orders) {
+                        $barcodes = [];
+                        $generator = new BarcodeGeneratorPNG();
+
+                        foreach ($orders as $order) {
+                                // Get all the product stock lists for the current order
+                                $productStockLists = CollectProductStockList::where('collect_product_stock_id', $order->id)->get();
+
+                                // Generate barcodes for each product in the list
+                                foreach ($productStockLists as $item) {
+                                    $barcodeData = $generator->getBarcode($item->id, $generator::TYPE_CODE_128);
+                                    $barcodes[] = [
+                                        'id' => $item->id,
+                                        'Product_id' => $order->admin_product_id,
+                                        'barcode' => base64_encode($barcodeData),
+                                    ];
+                                }
+                            }
+
+                        // Generate the PDF
+                        $pdf = Pdf::loadView('barcodes', compact('barcodes'));
+                        return response()->streamDownload(
+                            fn () => print($pdf->output()),
+                            'barcodes.pdf'
+                        );
+                        // return view('barcodes', compact('barcodes'));
+                    })
+                    ->color('primary')
+                    ->icon('heroicon-o-printer')
+                    ->requiresConfirmation(),
                 ]),
             ]);
     }
