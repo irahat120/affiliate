@@ -151,7 +151,7 @@ class AdminProductResource extends Resource
                         ])->columns(2),
                     ])
                     ->action(function (array $data) {
-                        // Insert collect product stock start--------------------
+// -----------------------------------------Insert collect product stock start--------------------------------
                         CollectProductStock::insert([
                             'collection_number' => $data['collection_number'],
                             'admin_product_id' => $data['admin_product_id'],
@@ -166,8 +166,8 @@ class AdminProductResource extends Resource
                         ->success()
                         ->send();
 
-                        // Insert collect product stock end------------------------------
-                        // Insert collect product stock list start------------------------------
+// ----------------------------------------Insert collect product stock end---------------------------------------
+// -------------------------------------Insert collect product stock list start-----------------------------------
                         for ($i = 0; $i < $data['quantity']; $i++) {
 
                             $StockId = CollectProductStock::orderBy('id', 'desc')->first();
@@ -188,9 +188,9 @@ class AdminProductResource extends Resource
                             ->success()
                             ->send();
 
-                        // Insert collect product stock list end------------------------------
+// -----------------------------------Insert collect product stock list end------------------------------
 
-                        // Update admin product start--------------------------------------
+// ---------------------------------------Update admin product start-------------------------------------
                         $stocks =collectProductStockList::where('stock_status', 'Instock')
                             ->where('admin_product_id', $data['admin_product_id'])
                             ->count();
@@ -199,9 +199,9 @@ class AdminProductResource extends Resource
                             'stock' => $stocks,
                             ]);
 
-                        // Update admin product end--------------------------------------
+// -----------------------------------Update admin product end--------------------------------------
 
-                        //total Value Update balance Start------------------------
+// ---------------------------------total Value Update balance Start--------------------------------
 
                         $price = CollectProductStock::where('collection_number', $data['collection_number'])
                             ->selectRaw('SUM(quantity * paid_price) as total_value')
@@ -219,7 +219,7 @@ class AdminProductResource extends Resource
                             ->title('Update Total added successfully!')
                             ->success()
                             ->send();
-                        //total Value Update balance End----------------------
+// -----------------------------------total Value Update balance End---------------------------------
 
 
                     })->color('success'),

@@ -60,7 +60,7 @@ class CollectProductStockResource extends Resource
                 ->afterStateUpdated(function ($state, callable $get) {
                         $collectProductStockId = $get('id');
                         $newQuantity = $state;
-
+// ----------------------------Extra Increase stocks list insert start------------------------------------
                         // Get the current stock list count
                         $listCount = CollectProductStockList::where('collect_product_stock_id', $collectProductStockId)->count();
 
@@ -82,7 +82,9 @@ class CollectProductStockResource extends Resource
                                 ->success()
                                 ->send();
                         }
-                        // admin product stock and buy price updated start -------------------
+// ------------------------------Extra Increase stocks list insert End-------------------------------------
+
+// ----------------------------admin product stock and buy price updated start -------------------------
                         $stocks =collectProductStockList::where('stock_status', 'Instock')
                             ->where('admin_product_id', $get('admin_product_id'))
                             ->count();
@@ -97,16 +99,20 @@ class CollectProductStockResource extends Resource
                             ->success()
                             ->send();
 
-                        // admin product stock and buy price updated end -------------------
+// ----------------------------admin product stock and buy price updated end -----------------------------
 
 
                     }),
-                TextInput::make('paid_price')
+                
+// -------------------------Update Buy Price in collection product stock list start-----------------------
+                    TextInput::make('paid_price')
                     ->afterStateUpdated(function ($state, callable $get) {
                         CollectProductStockList::where('collect_product_stock_id',$get('id'))->update([
                             'buy_price' => $get('paid_price'),
                     ]);
                 }),
+// -------------------------Update Buy Price in collection product stock list End-------------------------
+
 
             ]);
 
@@ -149,7 +155,7 @@ class CollectProductStockResource extends Resource
                     ->action(function (Collection $orders) {
                         $barcodes = [];
                         $generator = new BarcodeGeneratorPNG();
-
+// -----------------------------barcode print start----------------------------------
                         foreach ($orders as $order) {
                                 // Get all the product stock lists for the current order
                                 $productStockLists = CollectProductStockList::where('collect_product_stock_id', $order->id)->get();
@@ -173,9 +179,12 @@ class CollectProductStockResource extends Resource
                         );
                         // return view('barcodes', compact('barcodes'));
                     })
-                    ->color('primary')
+
+// -----------------------------barcode print End----------------------------------
+
+                    ->color('success')
                     ->icon('heroicon-o-printer')
-                    ->requiresConfirmation(),
+                    // ->requiresConfirmation(),
                 ]),
             ]);
     }
