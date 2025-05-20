@@ -36,6 +36,11 @@ class CollectProductStock extends Model
         return $this->belongsTo(User::class, 'collection_user');
     }
 
+    public function adminProducts()
+{
+    return $this->belongsTo(AdminProduct::class, 'admin_product_id');
+}
+
 
 
 }

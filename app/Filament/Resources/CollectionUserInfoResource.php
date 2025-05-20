@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\CollectionUserInfoResource\Pages;
 use App\Filament\Resources\CollectionUserInfoResource\RelationManagers;
+use App\Filament\Resources\CollectionUserInfoResource\Pages\ViewCollectedProducts;
 
 class CollectionUserInfoResource extends Resource
 {
@@ -141,6 +142,7 @@ class CollectionUserInfoResource extends Resource
             'create' => Pages\CreateCollectionUserInfo::route('/create'),
             'view' => Pages\ViewCollectionUserInfo::route('/{record}'),
             'edit' => Pages\EditCollectionUserInfo::route('/{record}/edit'),
+            'view-collected-products' => ViewCollectedProducts::route('/{recordId}/view-collected-products'),
         ];
     }
 }

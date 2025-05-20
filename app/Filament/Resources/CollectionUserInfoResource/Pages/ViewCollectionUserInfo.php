@@ -2,9 +2,10 @@
 
 namespace App\Filament\Resources\CollectionUserInfoResource\Pages;
 
-use App\Filament\Resources\CollectionUserInfoResource;
 use Filament\Actions;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\ViewRecord;
+use App\Filament\Resources\CollectionUserInfoResource;
 
 class ViewCollectionUserInfo extends ViewRecord
 {
@@ -13,7 +14,13 @@ class ViewCollectionUserInfo extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\EditAction::make(),
+            // Actions\EditAction::make(),
+            Action::make('View Collected Products')
+                ->url(fn ($record) => CollectionUserInfoResource::getUrl('view-collected-products', [
+                    'recordId' => $record->id,
+                ]))
+                ->label('Collected Products')
+                ->icon('heroicon-o-eye')
         ];
     }
 }
