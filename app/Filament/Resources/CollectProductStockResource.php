@@ -46,17 +46,17 @@ class CollectProductStockResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('id')->label('Collect product stock id')->readOnly(),
-                TextInput::make('admin_product_id')->label('Admin Product Id')->readOnly(),
-                TextInput::make('collection_number')->label('Collection Id')->readOnly(),
-                TextInput::make('collection_user')->label('Collection User')->readOnly(),
-                Select::make('product_name')->disabledOn('edit')
+                TextInput::make('id')->label('Collect product stock id')->visibleOn('edit')->readOnly(),
+                TextInput::make('admin_product_id')->label('Admin Product Id')->readOnly()->visibleOn('edit'),
+                TextInput::make('collection_number')->label('Collection Id')->readOnly()->visibleOn('edit'),
+                TextInput::make('collection_user')->label('Collection User')->readOnly()->visibleOn('edit'),
+                Select::make('product_name')->disabledOn('edit')->visibleOn('edit')
                         ->relationship('AdminProduct','product_name')
                         ->label('Product Name'),
-                Select::make('sku')->disabledOn('edit')
+                Select::make('sku')->disabledOn('edit')->visibleOn('edit')
                         ->relationship('AdminProduct','sku')
                         ->label('SKU'),
-                TextInput::make('quantity')
+                TextInput::make('quantity')->visibleOn('edit')
                 ->afterStateUpdated(function ($state, callable $get) {
                         $collectProductStockId = $get('id');
                         $newQuantity = $state;
@@ -105,7 +105,7 @@ class CollectProductStockResource extends Resource
                     }),
                 
 // -------------------------Update Buy Price in collection product stock list start-----------------------
-                    TextInput::make('paid_price')
+                    TextInput::make('paid_price')->visibleOn('edit')
                     ->afterStateUpdated(function ($state, callable $get) {
                         CollectProductStockList::where('collect_product_stock_id',$get('id'))->update([
                             'buy_price' => $get('paid_price'),
