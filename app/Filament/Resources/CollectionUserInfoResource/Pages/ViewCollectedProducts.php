@@ -22,7 +22,7 @@ class ViewCollectedProducts extends Page
     {
         $currentUser = Filament::auth()->user();
         $this->user = CollectionUserInfo::with('user')->findOrFail($recordId);
-        $this->products = CollectProductStock::with('adminProducts')->where('collection_user',$currentUser->id)->where('collection_number', $this->user->collection_number)->get();
+        $this->products = CollectProductStock::with('adminProducts')->where('collection_number', $this->user->collection_number)->get();
 
     }
 }

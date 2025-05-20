@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->boolean('status')->default(true);
             $table->rememberToken();
-            $table->timestamps();
+            $table->timestamps('Asia/Dhaka');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

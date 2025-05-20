@@ -14,7 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => env('AUTH_GUARD', 'web'),
+        'guard' => env('AUTH_GUARD', 'users'),
         'passwords' => env('AUTH_PASSWORD_BROKER', 'users'),
     ],
 
@@ -36,10 +36,19 @@ return [
     */
 
     'guards' => [
-        'web' => [
+        'users' => [ // Normal users (UserPanal)
+            'driver' => 'session',
+            'provider' => 'userpanals',
+        ],
+
+        'web' => [ // Admin login (Filament or your custom)
             'driver' => 'session',
             'provider' => 'users',
         ],
+        // 'admin' => [
+        //     'driver' => 'session',
+        //     'provider' => 'admins',
+        // ],
     ],
 
     /*
@@ -62,8 +71,18 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', App\Models\User::class),
+            'model' => App\Models\User::class, // For admin (Filament uses this by default)
         ],
+
+        'userpanals' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\UserPanal::class, // For normal users
+        ],
+        
+        // 'admins' => [
+        //     'driver' => 'eloquent',
+        //     'model' => env('AUTH_MODEL', App\Models\User::class),
+        // ],
 
         // 'users' => [
         //     'driver' => 'database',

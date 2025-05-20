@@ -7,6 +7,7 @@
             <tr>
                 <th class="px-6 py-3 text-left">#</th>
                 <th class="px-6 py-3 text-left">Image</th>
+                <th class="px-6 py-3 text-left">Colelct User</th>
                 <th class="px-6 py-3 text-left">Product Name</th>
                 <th class="px-6 py-3 text-left">Quantity</th>
                 <th class="px-6 py-3 text-left">Total</th>
@@ -40,6 +41,7 @@
                             N/A
                         @endif
                     </td>
+                    <td class="px-6 py-2">{{ $product->user->name }}</td>
                     <td class="px-6 py-2">{{ $product->quantity }}</td>
                     <td class="px-6 py-2">{{ $product->paid_price }}</td>
                     <td class="px-6 py-2">{{ $lineTotal }}</td>
