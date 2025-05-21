@@ -20,10 +20,19 @@ class LoginController extends Controller
             'password'=>'required'
         ]);
 
+        
+        
         if($validator->passes()){
             if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
+                $user = Auth::user();
+
+                if ($user->status) {
+                    return redirect()->route('user.dashboard');
+                } else {
+                    Auth::logout();
+                    return redirect()->route('user.login')->with('error', 'User is not active. Contact Admin, please.');
+                }
                 
-                return redirect()->route('user.dashboard');
             }else{
                 return redirect()->route('user.login')->with('error','Email or Password is incorrect');
             }

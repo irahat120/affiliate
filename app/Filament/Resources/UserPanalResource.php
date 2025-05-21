@@ -6,9 +6,11 @@ use App\Filament\Resources\UserPanalResource\Pages;
 use App\Filament\Resources\UserPanalResource\RelationManagers;
 use App\Models\UserPanal;
 use Filament\Forms;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\CheckboxColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -27,7 +29,9 @@ class UserPanalResource extends Resource
     {
         return $form
             ->schema([
-                //
+                TextInput::make('name'),
+                TextInput::make('email')->unique(),
+                TextInput::make('password')->password(),
             ]);
     }
 
@@ -35,7 +39,11 @@ class UserPanalResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('index')->label('Sl')->rowIndex(),
                 TextColumn::make('name'),
+                TextColumn::make('email'),
+                CheckboxColumn::make('status'),
+                TextColumn::make('created_at')->datetime('d M y')
             ])
             ->filters([
                 //
