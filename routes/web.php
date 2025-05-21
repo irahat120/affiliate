@@ -4,7 +4,7 @@ use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('/dashboard');
 });
 
 
@@ -21,6 +21,28 @@ Route::group(['middleware'=>'auth'],function(){
     Route::get('/dashboard',[LoginController::class,'dashboard'])->name('user.dashboard');
 
 });
+
+Route::get('/blank',[LoginController::class,'blank'])->name('user.blank');
+
+Route::get('/about',[LoginController::class,'about'])->name('user.about');
+Route::get('/charge',[LoginController::class,'charge'])->name('user.charge');
+
+Route::get('/howtowork',[LoginController::class,'howtowork'])->name('user.howtowork');
+
+Route::get('/orderlist',[LoginController::class,'orderlist'])->name('user.orderlist');
+
+Route::get('/ordernow',[LoginController::class,'ordernow'])->name('user.ordernow');
+
+Route::get('/payment',[LoginController::class,'payment'])->name('user.payment');
+
+Route::get('/product',[LoginController::class,'product'])->name('user.product');
+
+Route::get('/report',[LoginController::class,'report'])->name('user.report');
+
+Route::get('/track',[LoginController::class,'track'])->name('user.track');
+
+
+
 
 
 

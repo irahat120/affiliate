@@ -43,20 +43,14 @@ class LoginController extends Controller
         }
     }
 
-
-
     public function dashboard(){
         return view('dashboard');
     }
-
-
 
     public function register(){
 
         return view('register');
     }
-
-
 
     public function processRegister(Request $request){
 
@@ -83,10 +77,62 @@ class LoginController extends Controller
         }
 
     }
+
     public function logout(){
         Auth::logout();
         return redirect()->route('user.login');
     }
+
+    public function blank(){
+
+        return view('blank');
+    }
+
+    public function about(){
+        
+        return view('about');
+    }
+
+    public function charge(){
+        
+        return view('charge');
+    }
+
+    public function howtowork(){
+        
+        return view('howtowork');
+    }
+
+    public function orderlist(){
+        
+        return view('orderlist');
+    }
+
+    public function ordernow(){
+        
+        return view('ordernow');
+    }
+
+    public function payment(){
+        
+        return view('payment');
+    }
+
+    public function product(){
+        
+        return view('product');
+    }
+
+    public function report(){
+        
+        return view('report');
+    }
+
+    public function track(){
+        
+        return view('track');
+    }
+
 
 
 }
