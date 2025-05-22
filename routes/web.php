@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AboutUsController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
@@ -25,7 +26,7 @@ Route::group(['middleware'=>'auth'],function(){
 
 Route::get('/blank',[LoginController::class,'blank'])->name('user.blank');
 
-Route::get('/about',[LoginController::class,'about'])->name('user.about');
+
 Route::get('/charge',[LoginController::class,'charge'])->name('user.charge');
 
 Route::get('/howtowork',[LoginController::class,'howtowork'])->name('user.howtowork');
@@ -50,6 +51,10 @@ Route::get('/report', [ReportController::class, 'reportPage'])->name('user.repor
 Route::Post('/report/authenticate',[ReportController::class,'authenticate'])->name('report.authenticate');
 
 
+
+
+Route::get('/about',[AboutUsController::class,'index'])->name('user.about');
+Route::get('/about',[AboutUsController::class,'aboutus'])->name('user.about');
 
 
 

@@ -25,8 +25,8 @@
                                     <div class="row gy-3 overflow-hidden">
                                         <div class="col-12">
                                             <div class="form-floating mb-3">
-                                                <input type="text" value="{{old('name')}}" class="form-control @error('name') is-invalid @enderror" name="name" id="name" placeholder="name" >
-                                                <label for="name" class="form-label">name</label>
+                                                <input type="text" value="{{old('name')}}" class="form-control @error('name') is-invalid @enderror" name="name" id="name" placeholder="user name" >
+                                                <label for="name" class="form-label">User name</label>
                                                 @error('name')
                                                     <p class="invalid-feedback">{{ $message }}</p>
                                                 @enderror

@@ -55,7 +55,7 @@ class LoginController extends Controller
     public function processRegister(Request $request){
 
         $validator = Validator::make($request->all(),[
-            'name'=>'required',
+            'name'=>'required|unique:users',
             'email'=> 'required|email|unique:users',
             'password'=>'required|confirmed'
         ]);
@@ -86,11 +86,6 @@ class LoginController extends Controller
     public function blank(){
 
         return view('blank');
-    }
-
-    public function about(){
-        
-        return view('about');
     }
 
     public function charge(){
