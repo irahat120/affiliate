@@ -123,11 +123,6 @@ class LoginController extends Controller
         return view('product');
     }
 
-    public function report(){
-        
-        return view('report');
-    }
-
     public function track(){
         
         return view('track');

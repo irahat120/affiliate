@@ -20,7 +20,7 @@ class UserPanalResource extends Resource
 {
     protected static ?string $model = UserPanal::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
     protected static ?string $navigationGroup = 'Access';
     protected static ?int $navigationSort = 4;
     protected static ?string $modelLabel = 'Affiliate User';

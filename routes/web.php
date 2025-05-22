@@ -1,11 +1,12 @@
 <?php
 
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('/dashboard');
-});
+// Route::get('/', function () {
+//     return view('/dashboard');
+// });
 
 
 Route::group(['middleware'=>'guest'],function(){
@@ -18,7 +19,7 @@ Route::group(['middleware'=>'guest'],function(){
 });
 Route::group(['middleware'=>'auth'],function(){
     Route::get('/logout',[LoginController::class,'logout'])->name('user.logout');
-    Route::get('/dashboard',[LoginController::class,'dashboard'])->name('user.dashboard');
+    Route::get('/',[LoginController::class,'dashboard'])->name('user.dashboard');
 
 });
 
@@ -35,11 +36,18 @@ Route::get('/ordernow',[LoginController::class,'ordernow'])->name('user.ordernow
 
 Route::get('/payment',[LoginController::class,'payment'])->name('user.payment');
 
+Route::get('/reportsview',[LoginController::class,'reportsview'])->name('user.reportsview');
 Route::get('/product',[LoginController::class,'product'])->name('user.product');
 
-Route::get('/report',[LoginController::class,'report'])->name('user.report');
+
 
 Route::get('/track',[LoginController::class,'track'])->name('user.track');
+
+//----------------Report------------
+Route::get('/reportsview', [ReportController::class, 'viewReport'])->name('user.reportsview');
+Route::get('/report',[ReportController::class,'index'])->name('user.report');
+Route::get('/report', [ReportController::class, 'reportPage'])->name('user.report');
+Route::Post('/report/authenticate',[ReportController::class,'authenticate'])->name('report.authenticate');
 
 
 
