@@ -103,11 +103,6 @@ class LoginController extends Controller
         return view('orderlist');
     }
 
-    public function ordernow(){
-        
-        return view('ordernow');
-    }
-
     public function payment(){
         
         return view('payment');

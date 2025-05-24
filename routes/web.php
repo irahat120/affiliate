@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AboutUsController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\OrderNowController;
 use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
 
@@ -33,7 +34,6 @@ Route::get('/howtowork',[LoginController::class,'howtowork'])->name('user.howtow
 
 Route::get('/orderlist',[LoginController::class,'orderlist'])->name('user.orderlist');
 
-Route::get('/ordernow',[LoginController::class,'ordernow'])->name('user.ordernow');
 
 Route::get('/payment',[LoginController::class,'payment'])->name('user.payment');
 
@@ -52,10 +52,16 @@ Route::Post('/report/authenticate',[ReportController::class,'authenticate'])->na
 
 
 
-
+//------------about us-------------------------
 Route::get('/about',[AboutUsController::class,'index'])->name('user.about');
 Route::get('/about',[AboutUsController::class,'aboutus'])->name('user.about');
 
+
+
+//-----------------order now------------------------
+Route::get('/ordernow',[OrderNowController::class,'ordernow'])->name('user.ordernow');
+Route::get('/ordernow',[OrderNowController::class,'ordernowlist'])->name('user.ordernow');
+Route::get('/productview',[OrderNowController::class,'productview'])->name('user.productview');
 
 
 
