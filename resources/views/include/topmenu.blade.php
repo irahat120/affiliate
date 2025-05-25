@@ -20,11 +20,21 @@
                     </div>
                     <!-- End Logo Header -->
                 </div>
+
                 <!-- Navbar Header -->
                 <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
                     <div class="container-fluid">
                         <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
-                          
+                            <li class="nav-item topbar-icon dropdown hidden-caret">
+                                <a class="nav-link dropdown-toggle" href="{{route('user.clickicon')}}" role="button">
+                                    <i class="fas fa-shopping-bag"></i>
+                                     @php
+                                        $user = Auth::user();
+                                        $productCount = \App\Models\AddCart::where('user_name', $user->name)->count();
+                                    @endphp
+                                    <span class="notification">{{$productCount}}</span>
+                                </a>
+                            </li>
                             <li class="nav-item topbar-icon dropdown hidden-caret">
                                 <a class="nav-link dropdown-toggle" href="#" id="notifDropdown" role="button"
                                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

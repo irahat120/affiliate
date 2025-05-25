@@ -60,8 +60,13 @@ Route::get('/about',[AboutUsController::class,'aboutus'])->name('user.about');
 
 //-----------------order now------------------------
 Route::get('/ordernow',[OrderNowController::class,'ordernow'])->name('user.ordernow');
-Route::get('/ordernow',[OrderNowController::class,'ordernowlist'])->name('user.ordernow');
 Route::get('/productview',[OrderNowController::class,'productview'])->name('user.productview');
+Route::post('/ordernow',[OrderNowController::class,'addtocard'])->name('user.addtocard');
+Route::post('/addtocard',[OrderNowController::class,'addviewclick'])->name('user.addviewclick');
+Route::get('/addtocard',[OrderNowController::class,'buynow'])->name('user.clickicon');
+Route::post('/ordernow/update', [OrderNowController::class, 'updateCart'])->name('user.cart.update');
+
+Route::get('/addcard/delete/{id}', [OrderNowController::class, 'addcarddelete'])->name('user.addcarddelete');
 
 
 

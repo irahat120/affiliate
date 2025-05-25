@@ -51,12 +51,14 @@
                     <h4 class="text-success mb-3"><i class="fa-solid fa-bangladeshi-taka-sign"></i> {{ number_format($product->sell_price, 2) }}</h4>
 
                     <!-- Add to Cart -->
-                    <form method="POST" action="">
+                    <form method="post" action="{{route('user.addtocard')}}" enctype="multipart/form-data">
                         @csrf
                         <div class="d-flex align-items-center mb-3">
-                            <label for="quantity" class="me-2">Qty:</label>
-                            <input type="number" name="quantity" id="quantity" value="1" min="1"
+                            <label for="quentity" class="me-2">Qty:</label>
+                            <input type="number" name="quentity" id="quentity" value="1" min="1"
                                 class="form-control w-auto">
+                            <input type="hidden" name="product_id" value="{{$product->id}}">
+                            <input type="hidden" name="sell_price" value="{{$product->sell_price}}">
                         </div>
                         <button type="submit" class="btn btn-dark text-warning px-4 py-2">Add to Cart</button>
                     </form>

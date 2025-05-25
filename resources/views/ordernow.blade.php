@@ -10,6 +10,9 @@
                 <h3 class="fw-bold mb-3">Order Now</h3>
             </div>
         </div>
+        @if (Session::has('success'))
+            <div class="alert alert-success">{{ Session::get('success') }}</div>
+        @endif
         <div class="container">
             <div class="row">
                 @foreach ($product_lists as $product)
@@ -55,8 +58,12 @@
                                     <h5><i class="fa-solid fa-bangladeshi-taka-sign"></i> {{ $product->sell_price }}</h5>
                                 </div>
                                 <div class="col-8">
-                                    <a href="#" class="btn btn-dark w-100 p-3 rounded-0 text-warning">ADD TO
-                                        CART</a>
+                                    <form action="{{ route('user.addviewclick')}}" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="id" value="{{ $product->id }}">
+                                        <button type="submit" class="btn btn-dark w-100 p-3 rounded-0 text-warning">ADD TO CART</button>
+                                    </form>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -65,4 +72,12 @@
             </div>
         </div>
     </div>
+    
+@if (Session::has('success'))
+    <script>
+        setTimeout(function() {
+            location.reload();
+        }, 3000); // Reloads after 3 seconds
+    </script>
+@endif
     @include('include.footer')

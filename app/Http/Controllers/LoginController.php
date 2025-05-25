@@ -55,8 +55,8 @@ class LoginController extends Controller
     public function processRegister(Request $request){
 
         $validator = Validator::make($request->all(),[
-            'name'=>'required|unique:users',
-            'email'=> 'required|email|unique:users',
+            'name'=>'required|unique:user_panals',
+            'email'=> 'required|email|unique:user_panals',
             'password'=>'required|confirmed'
         ]);
 

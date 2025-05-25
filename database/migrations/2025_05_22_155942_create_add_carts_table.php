@@ -15,8 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('user_name');
             $table->integer('product_id');
-            $table
-            $table->timestamps();
+            $table->integer('sell_price');
+            $table->integer('quentity');
+            $table->boolean('status')->default(true);
+            $table->timestamps('Asia/Dhaka');
         });
     }
 
