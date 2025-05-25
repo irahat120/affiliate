@@ -98,10 +98,7 @@ class LoginController extends Controller
         return view('howtowork');
     }
 
-    public function orderlist(){
-        
-        return view('orderlist');
-    }
+    
 
     public function payment(){
         
