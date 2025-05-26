@@ -104,7 +104,7 @@
 
                     <div class="col-md-4 mb-3">
                         <label for="phonenumber" class="form-label">Phone Number</label>
-                        <input name="phone_number" type="number" class="form-control" id="number" placeholder="Phone Number" required>
+                        <input name="phone_number"  type="text" class="form-control" id="number" placeholder="Phone Number" required>
                     </div>
                     <div class="col-md-4 mb-3">
                         <label for="Curiorservice" class="form-label">Curior Service</label>

@@ -6,12 +6,12 @@
 @include('include.topmenu')
 <div class="container">
     <div class="page-inner">
-        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
-            <div>
-                <h3 class="fw-bold mb-3 center">Blank Page</h3>
-            </div>
-        </div>
         <form action="">
+            <div class="card alert-black">
+                <div class="card-header">
+                    <h1 class="card-title text-center text"> <span style="font-size: 30px" class="form-control btn btn-warning">Order Number: Ds1234</span> </h1>
+                </div>
+            </div>
             {{-- --------------------Customer info-------------- --}}
             <div class="card alert-success">
                 <div class="card-header">
@@ -135,7 +135,6 @@
                                 <th>Product Image</th>
                                 <th>Quantity</th>
                                 <th>Unit Price</th>
-                                <th>Discount</th>
                                 <th>Total Price</th>
                             </tr>
                         </thead>
@@ -151,10 +150,7 @@
                                 </td>
                                 <td>5</td>
                                 <td>300</td>
-                                <td>
-                                    <input type="number" class="form-control"
-                                        value="0"placeholder="Delivery Provider Code">
-                                </td>
+                                
                                 <td>1500</td>
                             </tr>
                             <tr>
@@ -168,10 +164,7 @@
                                 </td>
                                 <td>5</td>
                                 <td>300</td>
-                                <td>
-                                    <input type="number" class="form-control"
-                                        value="0"placeholder="Delivery Provider Code">
-                                </td>
+                                
                                 <td>1500</td>
                             </tr>
                         </tbody>
@@ -239,19 +232,24 @@
 
                 <div class="p-4">
                     <div class="row">
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-3 mb-3">
                             <label class="form-label">Total Price</label>
                             <input type="text" class="form-control" value="500 Taka" placeholder="Status"
                                 disabled>
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Discount</label>
+                            <input type="text" class="form-control" value="100 Taka" placeholder="Status"
+                                >
+                        </div>
+                        <div class="col-md-3 mb-3">
                             <label class="form-label">Pre Payment</label>
                             <input type="nmber" class="form-control" value="100 Taka" placeholder="Status">
                         </div>
 
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-3 mb-3">
                             <label class="form-label">Grand Total</label>
-                            <input type="text" class="form-control" value="400 taka"
+                            <input type="text" class="form-control" value="300 taka"
                                 placeholder="Delivery Provider Code" disabled>
                         </div>
                     </div>
